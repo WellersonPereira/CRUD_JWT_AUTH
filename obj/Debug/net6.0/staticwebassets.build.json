@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "STfl93ZpAPrWKsFdWIxcQDtTHAXwn8hhQ+1+RhJYvI0=",
+  "Source": "CRUD_JWT_AUTH",
+  "BasePath": "_content/CRUD_JWT_AUTH",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
