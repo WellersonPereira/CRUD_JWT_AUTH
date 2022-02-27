@@ -1,4 +1,4 @@
-using CRUD_JWT_AUTH.Models;
+using CRUD_JWT_AUTH.Identity;
 using CRUD_JWT_AUTH.Repositories;
 using CRUD_JWT_AUTH.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +11,11 @@ namespace CRUD_JWT_AUTH.Controllers
     {
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] User model)
+        public ActionResult<dynamic> Authenticate([FromBody] User model)
         {
             //Get the user
-            var user = UserRepository.Get(model.Username, model.Password);
+            // var user = UserRepository.Get("model.Username", model.Password);
+            string user = "x";
 
             if (user == null)
             {

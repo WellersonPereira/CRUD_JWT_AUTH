@@ -1,34 +1,68 @@
 using CRUD_JWT_AUTH;
+using CRUD_JWT_AUTH.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
-using System.Xml.Linq;
+using CRUD_JWT_AUTH.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var key = Encoding.ASCII.GetBytes(Settings.Secret);
-builder.Services.AddAuthentication(x => {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x => {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
+//Connection string
+builder.Services.AddDbContext<Context>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Password and Manager settings
+builder.Services.AddIdentityCore<User>(opt =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+        opt.Password.RequireDigit = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequiredLength = 4;
+    }).AddEntityFrameworkStores<Context>()
+    .AddRoleValidator<RoleValidator<Role>>()
+    .AddRoleManager<RoleManager<Role>>()
+    .AddSignInManager<SignInManager<User>>();
+
+//JWT Secret Key
+var key = Encoding.ASCII.GetBytes(Settings.Secret);
+
+//Authentication settings
+builder.Services.AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }
+).AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+//Authorization policy settings
+builder.Services.AddAuthorization(opt =>
+    {
+        opt.FallbackPolicy = new AuthorizationPolicyBuilder() //By default an user must be logged on to access any endpoint.
+            .RequireAuthenticatedUser()
+            .Build();
+    });
 
 var app = builder.Build();
 

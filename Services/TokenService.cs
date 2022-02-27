@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using CRUD_JWT_AUTH.Models;
 using Microsoft.IdentityModel.Tokens;
+using CRUD_JWT_AUTH.Identity;
 
 namespace CRUD_JWT_AUTH.Services
 {
@@ -14,11 +14,11 @@ namespace CRUD_JWT_AUTH.Services
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
             var TokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role)
-                }),
+                // Subject = new ClaimsIdentity(new[]
+                // {
+                //     new Claim(ClaimTypes.Name, user.Username),
+                //     new Claim(ClaimTypes.Role, user.Role)
+                // }),
 
                 Expires = DateTime.UtcNow.AddHours(8),
                 SigningCredentials = new SigningCredentials(
