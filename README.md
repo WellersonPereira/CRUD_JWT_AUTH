@@ -10,5 +10,6 @@ CRUD_JWT_AUTH is an API that Creates, Reads, Updates and Deletes an user from da
 
 The project still under development and the next updates will focus on the following tasks:
 - [x] User Authentication using JWT.
-- [ ] Connect with database.
-- [ ] C.R.U.D
+- [x] Connect with database.
+- [x] User Authorization using Identity;
+- [ ] User, Role edition and deletion;

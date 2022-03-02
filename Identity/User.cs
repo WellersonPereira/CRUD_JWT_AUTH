@@ -4,6 +4,6 @@ namespace CRUD_JWT_AUTH.Identity
 {
     public class User : IdentityUser<int>
     {
-        public virtual List<UserRole> UserRoles { get; set; }
+        public string FullName { get; set; }
     }
 }
